@@ -1,0 +1,53 @@
+name: 2027 设计秋招追踪
+
+on:
+  schedule:
+    - cron: "0 9,18 * * *"
+      timezone: "Asia/Shanghai"
+  workflow_dispatch:
+
+concurrency:
+  group: design-autumn-recruitment
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify-and-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+      FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+      FEISHU_APP_TOKEN: ${{ secrets.FEISHU_APP_TOKEN }}
+      FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: 读取追踪程序
+        uses: actions/checkout@v4
+
+      - name: 配置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 安装浏览器
+        run: python -m playwright install --with-deps chromium
+
+      - name: 运行官方来源核验并更新飞书
+        run: python tracker.py --config sources.yaml --output run-summary.json
+
+      - name: 保存本次核验报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: recruitment-summary-${{ github.run_id }}
+          path: run-summary.json
+          if-no-files-found: warn
+          retention-days: 30

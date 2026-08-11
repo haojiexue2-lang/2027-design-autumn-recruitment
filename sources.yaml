@@ -96,7 +96,221 @@ sources:
     priority: P0
     batch: 2027届校园招聘
     campaign_2027: true
-    entry_url: https://careers.oppo.com/campus/post
+    entry_url: https://careers.oppo.com/university/oppo/campus
     allowed_domains: [careers.oppo.com]
-    job_link_regex: /(campus|post|position|job|detail)/
+    job_link_regex: /university/oppo/campus/post/
+    max_details: 100
+
+  - name: 拼多多集团-PDD
+    company_level: 大型科技平台与头部电商企业
+    priority: P0
+    batch: 2027届校园招聘提前批
+    campaign_2027: true
+    entry_url: https://careers.pddglobalhr.com/campus/grad
+    allowed_domains: [careers.pddglobalhr.com]
+    job_link_regex: /campus/grad/detail/
+    default_major: "设计、艺术、数字媒体、人机交互等相关专业"
+    max_details: 100
+
+  - name: 海尔智家
+    company_level: 世界500强智能家居与物联网头部企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: true
+    entry_url: https://maker.haier.net/client/campus
+    allowed_domains: [maker.haier.net]
+    job_link_regex: /client/campus/(?:customizedjobdetail|jobdetail)/
+    seed_jobs:
+      - https://maker.haier.net/client/campus/customizedjobdetail/id/272.html
+    open_date: "2026-07-01"
+    qualification_note: "2027届本科可投；视觉传达等设计专业匹配；青岛；官方明确要求本科及以上"
+    default_major: "美术、艺术、设计类专业优先"
+    max_details: 80
+
+  - name: 米哈游
+    company_level: 头部游戏与内容科技企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: true
+    entry_url: https://jobs.mihoyo.com
+    allowed_domains: [jobs.mihoyo.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 比亚迪
+    company_level: 全球头部新能源汽车与科技企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: true
+    write_placeholder: true
+    entry_url: https://job.byd.com/portal/mobile/school-home
+    allowed_domains: [job.byd.com]
+    job_link_regex: /(school|campus|position|job|detail)/
+    qualification_note: "官方已确认27届校招即将开始；重点监控智能座舱、UI/UE、交互设计与用户研究方向"
+    max_details: 100
+
+  # 下列公司进入官方页面雷达；未发现详情页明确写明 2027 届时，不生成占位记录。
+  - name: 小米集团
+    company_level: 大型科技平台与智能硬件/汽车头部企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://hr.xiaomi.com/campus
+    allowed_domains: [hr.xiaomi.com]
+    job_link_regex: /campus/(?:view|position|job|detail)/
+    max_details: 100
+
+  - name: 腾讯
+    company_level: 大型科技平台与头部游戏企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://join.qq.com/post.html
+    allowed_domains: [join.qq.com]
+    job_link_regex: /(post|position|job|detail)/
+    max_details: 100
+
+  - name: 京东
+    company_level: 大型科技平台与头部电商企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://campus.jd.com
+    allowed_domains: [campus.jd.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 美团
+    company_level: 大型科技平台与本地生活头部企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://zhaopin.meituan.com/web/campus
+    allowed_domains: [zhaopin.meituan.com]
+    job_link_regex: /(?:position|job)/(?:detail)?/
+    max_details: 100
+
+  - name: 快手
+    company_level: 大型科技平台与AI内容头部企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://zhaopin.kuaishou.cn/recruit/e/#/official/index
+    allowed_domains: [zhaopin.kuaishou.cn]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 网易
+    company_level: 大型科技平台与头部游戏企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://campus.163.com
+    allowed_domains: [campus.163.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 小红书
+    company_level: 头部内容社区与电商平台
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://job.xiaohongshu.com/campus
+    allowed_domains: [job.xiaohongshu.com]
+    job_link_regex: /campus/position/
+    max_details: 100
+
+  - name: 哔哩哔哩
+    company_level: 头部内容社区与游戏企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://jobs.bilibili.com/campus/positions
+    allowed_domains: [jobs.bilibili.com]
+    job_link_regex: /campus/(?:position|positions|job|detail)/
+    max_details: 100
+
+  - name: 滴滴
+    company_level: 大型出行科技平台
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://talent.didiglobal.com/campus
+    allowed_domains: [talent.didiglobal.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: vivo
+    company_level: 头部智能硬件企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://hr.vivo.com/wt/vivo/web/index/CompvivoPagerecruit_School
+    allowed_domains: [hr.vivo.com]
+    job_link_regex: /(school|campus|position|job|detail)/
+    max_details: 100
+
+  - name: 荣耀
+    company_level: 头部智能硬件企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://career.hihonor.com
+    allowed_domains: [career.hihonor.com]
+    job_link_regex: /(school|campus|position|job|detail)/
+    max_details: 100
+
+  - name: 理想汽车
+    company_level: 头部智能汽车与AI企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://jobs.lixiang.com/campus
+    allowed_domains: [jobs.lixiang.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 小鹏汽车
+    company_level: 头部智能汽车与AI企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://job.xiaopeng.com
+    allowed_domains: [job.xiaopeng.com]
+    job_link_regex: /(school|campus|position|job|detail)/
+    max_details: 100
+
+  - name: 极氪
+    company_level: 头部智能汽车企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://career.zeekrlife.com
+    allowed_domains: [career.zeekrlife.com]
+    job_link_regex: /(school|campus|position|job|detail)/
+    max_details: 100
+
+  - name: 美的集团
+    company_level: 世界500强智能家电与科技企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: false
+    entry_url: https://careers.midea.com
+    allowed_domains: [careers.midea.com]
+    job_link_regex: /(school|campus|position|job|detail)/
     max_details: 100

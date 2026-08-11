@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+      FEISHU_APP_ID: cli_aaf1d6740d389cb3
       FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
-      FEISHU_APP_TOKEN: ${{ secrets.FEISHU_APP_TOKEN }}
-      FEISHU_TABLE_ID: ${{ secrets.FEISHU_TABLE_ID }}
+      FEISHU_APP_TOKEN: Cys0byV8WaJxuysCWdGccWt2nAm
+      FEISHU_TABLE_ID: tblpc5Op40T50Zsd
       PYTHONUNBUFFERED: "1"
     steps:
       - name: 读取追踪程序

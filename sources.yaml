@@ -1,0 +1,102 @@
+version: 1
+profile:
+  cohort: "2027届本科"
+  cities:
+    - 北京
+    - 上海
+    - 广州
+    - 深圳
+    - 杭州
+    - 成都
+    - 重庆
+    - 武汉
+    - 苏州
+    - 西安
+    - 南京
+    - 长沙
+    - 郑州
+    - 天津
+    - 合肥
+    - 青岛
+    - 东莞
+    - 宁波
+    - 佛山
+
+# 这里仅放官方招聘域名。第三方网站不具备写入资格。
+sources:
+  - name: 蔚来
+    company_level: 头部智能汽车与智能硬件企业
+    priority: P0
+    batch: 2027届校园招聘提前批
+    campaign_2027: true
+    open_date: "2026-08-01"
+    entry_url: https://nio.jobs.feishu.cn/campus
+    allowed_domains: [nio.jobs.feishu.cn]
+    job_link_regex: /campus/position/
+    seed_jobs:
+      - https://nio.jobs.feishu.cn/campus/position/7661853577954396479/detail
+      - https://nio.jobs.feishu.cn/campus/position/7663335821135120678/detail
+    qualification_note: "与本人小米汽车体验设计、AI工作流和Figma/Codex经历高度匹配；须按官方要求提交作品集"
+    default_major: "设计、艺术、人机交互、心理学、计算机等相关专业"
+    max_details: 100
+
+  - name: 百度
+    company_level: 大型科技平台与AI头部企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: true
+    entry_url: https://talent.baidu.com/jobs/list?projectType=1
+    allowed_domains: [talent.baidu.com]
+    job_link_regex: /jobs/
+    max_details: 100
+
+  - name: 阿里巴巴
+    company_level: 大型科技平台
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: true
+    entry_url: https://campus-talent.alibaba.com/campus/gov
+    allowed_domains: [campus-talent.alibaba.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 120
+
+  - name: 字节跳动
+    company_level: 大型科技平台与AI头部企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: true
+    entry_url: https://jobs.bytedance.com/campus/page-6272Gc
+    allowed_domains: [jobs.bytedance.com]
+    job_link_regex: /(campus|position)/
+    max_details: 120
+
+  - name: 华为
+    company_level: 头部科技与智能硬件企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: true
+    entry_url: https://career.huawei.com/cn/campus-recruitment
+    allowed_domains: [career.huawei.com]
+    job_link_regex: /(campus|position|job)/
+    max_details: 120
+
+  - name: 大疆创新
+    company_level: 头部智能硬件企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: true
+    open_date: "2026-06-25"
+    entry_url: https://careers.dji.com/zh-CN/campus/recruitment?from=sec_nav
+    allowed_domains: [careers.dji.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: OPPO
+    company_level: 头部智能硬件企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: true
+    entry_url: https://careers.oppo.com/campus/post
+    allowed_domains: [careers.oppo.com]
+    job_link_regex: /(campus|post|position|job|detail)/
+    max_details: 100

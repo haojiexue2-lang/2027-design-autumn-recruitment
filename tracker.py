@@ -286,6 +286,16 @@ def title_matches_design(title: str) -> bool:
     return any(keyword.replace(" ", "") in normalized for keyword in ROLE_KEYWORDS)
 
 
+def infer_job_title(page_title: str, page_text: str) -> str:
+    """优先从详情页正文开头识别岗位名，兼容官网使用通用 HTML 标题的情况。"""
+    candidates = [page_title, *page_text.splitlines()[:30]]
+    for candidate in candidates:
+        cleaned = compact(candidate)
+        if 2 <= len(cleaned) <= 100 and title_matches_design(cleaned):
+            return cleaned
+    return compact(page_title)
+
+
 def eligibility_reasons(title: str, text: str, source: dict[str, Any]) -> list[str]:
     """返回不通过原因；空列表表示通过硬性资格校验。"""
     reasons: list[str] = []
@@ -367,7 +377,8 @@ class JobRecord:
 
 def build_record(source: dict[str, Any], evidence: PageEvidence, detected_at: datetime | None = None) -> JobRecord | None:
     detected_at = detected_at or now_cn()
-    reasons = eligibility_reasons(evidence.title, evidence.text, source)
+    job_title = infer_job_title(evidence.title, evidence.text)
+    reasons = eligibility_reasons(job_title, evidence.text, source)
     if reasons:
         return None
     text = evidence.text
@@ -384,10 +395,10 @@ def build_record(source: dict[str, Any], evidence: PageEvidence, detected_at: da
         company=source["name"],
         company_level=source["company_level"],
         priority=source["priority"],
-        title=evidence.title.strip(),
-        direction=infer_direction(evidence.title, evidence.text),
+        title=job_title,
+        direction=infer_direction(job_title, evidence.text),
         batch=source.get("batch", "2027届校园招聘"),
-        city=infer_city(f"{evidence.title}\n{text[:2500]}"),
+        city=infer_city(f"{job_title}\n{text[:2500]}"),
         cohort="2027届",
         education=education,
         major=major,
@@ -530,7 +541,7 @@ class OfficialBrowserScanner:
 
         await asyncio.gather(*(inspect(link) for link in links))
         qualified_count = len(records)
-        if not records:
+        if not records and source.get("write_placeholder", source.get("campaign_2027", False)):
             records.append(build_placeholder(source, campaign))
         report = {
             "company": source["name"],

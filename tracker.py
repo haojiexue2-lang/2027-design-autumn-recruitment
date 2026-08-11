@@ -156,6 +156,49 @@ def normalize_field_name(name: str) -> str:
     return re.sub(r"[\s,，、。；;：:]+", "", name or "").lower()
 
 
+def to_feishu_datetime(value: Any) -> int | None:
+    """把表内日期文字转换为飞书日期字段要求的毫秒时间戳。"""
+    text = compact(value)
+    if not text:
+        return None
+    if re.fullmatch(r"\d{12,13}", text):
+        return int(text)
+    from zoneinfo import ZoneInfo
+
+    normalized = text.replace("T", " ").removesuffix("Z").strip()
+    parsed: datetime | None = None
+    for pattern in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d"):
+        try:
+            parsed = datetime.strptime(normalized[:19], pattern)
+            break
+        except ValueError:
+            continue
+    if parsed is None:
+        try:
+            parsed = datetime.fromisoformat(text)
+        except ValueError as exc:
+            raise ValueError(f"无法识别日期：{text}") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=ZoneInfo(TZ_NAME))
+    return int(parsed.timestamp() * 1000)
+
+
+def from_feishu_datetime(value: Any, include_time: bool = False) -> str:
+    """把飞书毫秒时间戳还原为稳定的文本，避免每次扫描误判为变更。"""
+    text = compact(value)
+    if not text:
+        return ""
+    if not re.fullmatch(r"\d{10,13}", text):
+        return text
+    from zoneinfo import ZoneInfo
+
+    stamp = int(text)
+    if len(text) >= 12:
+        stamp /= 1000
+    parsed = datetime.fromtimestamp(stamp, ZoneInfo(TZ_NAME))
+    return parsed.strftime("%Y-%m-%d %H:%M" if include_time else "%Y-%m-%d")
+
+
 def normalize_url(url: str) -> str:
     if not url:
         return ""
@@ -512,6 +555,7 @@ class FeishuBitable:
         self.client = httpx.AsyncClient(timeout=httpx.Timeout(45.0), follow_redirects=True)
         self._token = ""
         self.field_map: dict[str, str] = {}
+        self.field_types: dict[str, int] = {}
 
     async def close(self) -> None:
         await self.client.aclose()
@@ -557,7 +601,9 @@ class FeishuBitable:
     async def load_fields(self) -> dict[str, str]:
         path = f"/bitable/v1/apps/{self.app_token}/tables/{self.table_id}/fields?page_size=100"
         payload = await self._request("GET", path)
-        actual = [item["field_name"] for item in payload.get("data", {}).get("items", [])]
+        items = payload.get("data", {}).get("items", [])
+        actual = [item["field_name"] for item in items]
+        type_by_actual = {item["field_name"]: int(item.get("type") or 1) for item in items}
         normalized = {normalize_field_name(name): name for name in actual}
         mapping: dict[str, str] = {}
         for canonical in CANONICAL_FIELDS:
@@ -573,6 +619,7 @@ class FeishuBitable:
         if missing:
             raise RuntimeError(f"飞书表格缺少字段：{', '.join(missing)}")
         self.field_map = mapping
+        self.field_types = {canonical: type_by_actual[actual_name] for canonical, actual_name in mapping.items()}
         return mapping
 
     async def list_records(self) -> list[dict[str, Any]]:
@@ -594,7 +641,18 @@ class FeishuBitable:
         if not self.field_map:
             raise RuntimeError("尚未读取飞书字段")
         safe = {key: value for key, value in canonical_fields.items() if key not in PROTECTED_FIELDS}
-        return {self.field_map[key]: value for key, value in safe.items() if key in self.field_map}
+        converted: dict[str, Any] = {}
+        for key, value in safe.items():
+            if key not in self.field_map:
+                continue
+            field_type = self.field_types.get(key, 1)
+            if field_type == 5:
+                value = to_feishu_datetime(value)
+            elif field_type == 15:
+                link = compact(value)
+                value = {"link": link, "text": link} if link else None
+            converted[self.field_map[key]] = value
+        return converted
 
     async def batch_create(self, records: list[dict[str, Any]]) -> None:
         if not records:
@@ -618,8 +676,17 @@ class FeishuBitable:
             await self._request("POST", path, json=payload)
 
 
-def canonicalize_existing_fields(fields: dict[str, Any], field_map: dict[str, str]) -> dict[str, str]:
-    return {canonical: compact(fields.get(actual)) for canonical, actual in field_map.items()}
+def canonicalize_existing_fields(
+    fields: dict[str, Any], field_map: dict[str, str], field_types: dict[str, int] | None = None
+) -> dict[str, str]:
+    field_types = field_types or {}
+    canonicalized: dict[str, str] = {}
+    for canonical, actual in field_map.items():
+        value = fields.get(actual)
+        if field_types.get(canonical) == 5:
+            value = from_feishu_datetime(value, canonical in {"首次发现时间", "最后核验时间"})
+        canonicalized[canonical] = compact(value)
+    return canonicalized
 
 
 def composite_key(fields: dict[str, str]) -> str:
@@ -631,12 +698,13 @@ def build_write_plan(
     existing: list[dict[str, Any]],
     field_map: dict[str, str],
     checked_at: datetime | None = None,
+    field_types: dict[str, int] | None = None,
 ) -> dict[str, Any]:
     checked_at = checked_at or now_cn()
     by_url: dict[str, tuple[dict[str, Any], dict[str, str]]] = {}
     by_composite: dict[str, tuple[dict[str, Any], dict[str, str]]] = {}
     for item in existing:
-        canonical = canonicalize_existing_fields(item.get("fields", {}), field_map)
+        canonical = canonicalize_existing_fields(item.get("fields", {}), field_map, field_types)
         if canonical.get("投递链接"):
             by_url[canonical_job_id(canonical["投递链接"])] = (item, canonical)
         by_composite[composite_key(canonical)] = (item, canonical)
@@ -729,7 +797,7 @@ async def run(config_path: Path, dry_run: bool) -> dict[str, Any]:
     try:
         field_map = await client.load_fields()
         existing = await client.list_records()
-        plan = build_write_plan(discovered, existing, field_map)
+        plan = build_write_plan(discovered, existing, field_map, field_types=client.field_types)
         await client.batch_create(plan["creates"])
         await client.batch_update(plan["updates"])
         summary.update(
@@ -761,6 +829,16 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps({key: value for key, value in summary.items() if key != "jobs"}, ensure_ascii=False, indent=2))
         return 0
     except Exception as exc:
+        failure = {
+            "run_at": now_cn().isoformat(),
+            "success": False,
+            "error_type": type(exc).__name__,
+            "error": str(exc),
+        }
+        try:
+            args.output.write_text(json.dumps(failure, ensure_ascii=False, indent=2), encoding="utf-8")
+        except OSError:
+            pass
         print(f"追踪任务失败：{exc}", file=sys.stderr)
         return 1
 

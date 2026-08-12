@@ -379,20 +379,39 @@ class JobRecord:
 
 def build_record(source: dict[str, Any], evidence: PageEvidence, detected_at: datetime | None = None) -> JobRecord | None:
     detected_at = detected_at or now_cn()
-    job_title = infer_job_title(evidence.title, evidence.text)
-    reasons = eligibility_reasons(job_title, evidence.text, source)
+    normalized_evidence_url = normalize_url(evidence.url)
+    overrides = {
+        normalize_url(url): values for url, values in source.get("job_overrides", {}).items()
+    }.get(normalized_evidence_url, {})
+    job_title = overrides.get("title") or infer_job_title(evidence.title, evidence.text)
+    eligibility_text = "\n".join(
+        compact(value)
+        for value in (
+            evidence.text,
+            overrides.get("cohort"),
+            overrides.get("education"),
+            overrides.get("city"),
+            overrides.get("major"),
+        )
+        if compact(value)
+    )
+    reasons = eligibility_reasons(job_title, eligibility_text, source)
     if reasons:
         return None
-    text = evidence.text
+    text = eligibility_text
     deadline = extract_deadline(text)
     markers = ["今日新增"]
     if is_within_7_days(deadline, detected_at.date()):
         markers.append("7天内截止")
     note = "｜".join(markers + ["官方页面已核验"])
-    education = "本科及以上"
+    education = overrides.get("education", "本科及以上")
     portfolio = "需要" if any(key.lower() in text.lower() for key in PORTFOLIO_KEYWORDS) else "官方未明确"
-    major = source.get("default_major", "设计、艺术、人机交互等相关专业，以官方岗位说明为准")
-    qualification = source.get("qualification_note", "2027届本科可投；方向与设计主线匹配；城市符合范围")
+    major = overrides.get(
+        "major", source.get("default_major", "设计、艺术、人机交互等相关专业，以官方岗位说明为准")
+    )
+    qualification = overrides.get(
+        "qualification", source.get("qualification_note", "2027届本科可投；方向与设计主线匹配；城市符合范围")
+    )
     return JobRecord(
         company=source["name"],
         company_level=source["company_level"],
@@ -400,12 +419,12 @@ def build_record(source: dict[str, Any], evidence: PageEvidence, detected_at: da
         title=job_title,
         direction=infer_direction(job_title, evidence.text),
         batch=source.get("batch", "2027届校园招聘"),
-        city=infer_city(f"{job_title}\n{text[:2500]}"),
+        city=overrides.get("city") or infer_city(f"{job_title}\n{text[:2500]}"),
         cohort="2027届",
         education=education,
         major=major,
         status="可投",
-        open_date=source.get("open_date", ""),
+        open_date=overrides.get("open_date", source.get("open_date", "")),
         deadline=deadline,
         apply_url=normalize_url(evidence.url),
         official_source=normalize_url(evidence.url),

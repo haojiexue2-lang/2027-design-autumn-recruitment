@@ -117,7 +117,7 @@ CLOSED_KEYWORDS = (
     "已下线",
 )
 BACHELOR_PATTERNS = (
-    r"本科(?:及以上|或以上)?",
+    r"本科(?:及以上|或以上|以上)?",
     r"本科生",
     r"学士(?:及以上)?",
     r"bachelor",

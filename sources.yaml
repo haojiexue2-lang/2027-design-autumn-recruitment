@@ -358,3 +358,244 @@ sources:
     allowed_domains: [careers.midea.com]
     job_link_regex: /(school|campus|position|job|detail)/
     max_details: 100
+
+  # 2026-08-13 新增：第二批设计秋招官方来源雷达（20 家）。
+  # 只监控企业自有招聘域名；在飞书中写入“官方来源监控”行，但绝不把未核验岗位标为可投。
+  - name: 蚂蚁集团
+    company_level: 大型金融科技与AI平台
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://talent.antgroup.com/campus
+    allowed_domains: [talent.antgroup.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 腾讯音乐娱乐集团
+    company_level: 头部数字音乐与内容科技平台
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://join.tencentmusic.com/campus/post/
+    allowed_domains: [join.tencentmusic.com]
+    job_link_regex: /campus/(?:post|post-details)/
+    max_details: 100
+
+  - name: 携程集团
+    company_level: 全球头部在线旅游科技平台
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://jobs.trip.com/campus
+    allowed_domains: [jobs.trip.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 同程旅行
+    company_level: 头部在线旅游科技平台
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://job.ly.com/campus
+    allowed_domains: [job.ly.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 叠纸游戏
+    company_level: 头部游戏与数字内容企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://career.papegames.com/campus
+    allowed_domains: [career.papegames.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 莉莉丝游戏
+    company_level: 头部游戏研发与全球发行企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://jobs.lilith.com/campus
+    allowed_domains: [jobs.lilith.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 完美世界
+    company_level: 头部游戏与数字文娱企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://recruit.wanmei.com/campus
+    allowed_domains: [recruit.wanmei.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 三七互娱
+    company_level: 上市游戏与数字文娱企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://zhaopin.37.com/campus
+    allowed_domains: [zhaopin.37.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 搜狐畅游
+    company_level: 上市游戏研发与运营企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://job.changyou.com/campus
+    allowed_domains: [job.changyou.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 4399游戏
+    company_level: 头部互联网游戏企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: true
+    write_placeholder: true
+    entry_url: https://hr.4399om.com/campus/
+    allowed_domains: [hr.4399om.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 安克创新
+    company_level: 上市智能硬件与全球消费科技企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://career.anker-in.com/campus
+    allowed_domains: [career.anker-in.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 传音控股
+    company_level: 上市全球智能硬件头部企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://transsion.zhiye.com/campus
+    allowed_domains: [transsion.zhiye.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 联想集团
+    company_level: 世界500强智能硬件与AI企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://talent.lenovo.com.cn/campus
+    allowed_domains: [talent.lenovo.com.cn]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 海信集团
+    company_level: 全球智能硬件与显示科技头部企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://hisense.zhiye.com/campus
+    allowed_domains: [hisense.zhiye.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: TCL实业
+    company_level: 全球智能硬件与显示科技头部企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://career.tcl.com/campus
+    allowed_domains: [career.tcl.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 科大讯飞
+    company_level: 上市人工智能与语音技术头部企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://campus.iflytek.com
+    allowed_domains: [campus.iflytek.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 商汤科技
+    company_level: 头部人工智能与计算机视觉企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://hr.sensetime.com/campus
+    allowed_domains: [hr.sensetime.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 地平线
+    company_level: 头部智能驾驶与AI芯片企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://horizon.zhiye.com/campus
+    allowed_domains: [horizon.zhiye.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 零跑汽车
+    company_level: 上市智能汽车企业
+    priority: P1
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://leapmotor.zhiye.com/campus
+    allowed_domains: [leapmotor.zhiye.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100
+
+  - name: 吉利汽车集团
+    company_level: 全球头部汽车与智能出行企业
+    priority: P0
+    batch: 2027届校园招聘
+    campaign_2027: false
+    write_placeholder: true
+    monitor_only: true
+    entry_url: https://geely.zhiye.com/campus
+    allowed_domains: [geely.zhiye.com]
+    job_link_regex: /(campus|position|job|detail)/
+    max_details: 100

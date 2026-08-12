@@ -447,25 +447,41 @@ def build_placeholder(source: dict[str, Any], campaign: PageEvidence, detected_a
     """官方项目已确认、但尚无合格设计岗位时保留监控占位行。"""
     detected_at = detected_at or now_cn()
     status = "待开启" if campaign.available else "待复核"
-    note = "今日更新｜官方校招页已核验，设计岗位待发布" if campaign.available else "今日更新｜官方页面暂时不可访问，待下次复核"
+    monitor_only = bool(source.get("monitor_only"))
+    if monitor_only:
+        note = "今日新增｜官方招聘来源已纳入监控，2027届本科设计正式岗位待核验" if campaign.available else "今日新增｜官方招聘来源暂不可访问，待下次复核"
+        title = source.get("placeholder_title", "官方设计校招来源（持续监控）")
+        batch = source.get("monitor_batch", "2027届秋招雷达（未确认批次）")
+        cohort = "目标：2027届（待官方确认）"
+        education = "目标：本科（待官方岗位确认）"
+        portfolio = "尚无可投岗位，不应投递"
+        qualification = "仅代表企业官方招聘来源已纳入监控；尚未核验到同时满足2027届、本科、正式校招、设计方向和目标城市的岗位，不可据此投递"
+    else:
+        note = "今日更新｜官方校招页已核验，设计岗位待发布" if campaign.available else "今日更新｜官方页面暂时不可访问，待下次复核"
+        title = source.get("placeholder_title", "2027届设计岗位（待官方发布）")
+        batch = source.get("batch", "2027届校园招聘")
+        cohort = "2027届"
+        education = "本科（具体岗位待官方发布）"
+        portfolio = "待官方岗位发布"
+        qualification = "官方校招项目监控中；尚未发现同时满足届别、学历、方向和城市的正式设计岗位"
     return JobRecord(
         company=source["name"],
         company_level=source["company_level"],
         priority=source["priority"],
-        title=source.get("placeholder_title", "2027届设计岗位（待官方发布）"),
+        title=title,
         direction="UI/UX、交互、产品设计、AI体验设计",
-        batch=source.get("batch", "2027届校园招聘"),
+        batch=batch,
         city="目标城市待官方岗位发布",
-        cohort="2027届",
-        education="本科（具体岗位待官方发布）",
+        cohort=cohort,
+        education=education,
         major="设计相关专业（具体岗位待官方发布）",
         status=status,
         open_date=source.get("open_date", ""),
         deadline="",
         apply_url=normalize_url(source["entry_url"]),
         official_source=normalize_url(source["entry_url"]),
-        portfolio="待官方岗位发布",
-        qualification="官方校招项目监控中；尚未发现同时满足届别、学历、方向和城市的正式设计岗位",
+        portfolio=portfolio,
+        qualification=qualification,
         first_seen=detected_at.strftime("%Y-%m-%d %H:%M"),
         last_verified=detected_at.strftime("%Y-%m-%d %H:%M"),
         change_note=note,
@@ -847,6 +863,7 @@ async def run(config_path: Path, dry_run: bool) -> dict[str, Any]:
     summary: dict[str, Any] = {
         "run_at": now_cn().isoformat(),
         "sources": source_reports,
+        "monitored_companies": len(config["sources"]),
         "qualified_jobs": sum(record.status == "可投" for record in discovered),
         "tracked_rows": len(discovered),
         "jobs": [asdict(record) for record in discovered],

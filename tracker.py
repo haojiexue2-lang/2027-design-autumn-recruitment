@@ -727,8 +727,11 @@ def build_write_plan(
     unchanged = 0
     changed_companies: list[str] = []
     today = checked_at.date()
+    unique_discovered = deduplicate(discovered)
+    active_companies = {record.company for record in unique_discovered if record.status == "可投"}
+    matched_record_ids: set[str] = set()
 
-    for record in deduplicate(discovered):
+    for record in unique_discovered:
         incoming = record.fields()
         match = by_url.get(canonical_job_id(record.apply_url)) or by_composite.get(composite_key(incoming))
         if not match:
@@ -736,6 +739,7 @@ def build_write_plan(
             changed_companies.append(record.company)
             continue
         item, current = match
+        matched_record_ids.add(item["record_id"])
         incoming["首次发现时间"] = current.get("首次发现时间") or incoming["首次发现时间"]
         material_changes = [field for field in MATERIAL_FIELDS if compact(incoming.get(field)) != compact(current.get(field))]
         note_parts: list[str] = []
@@ -761,6 +765,29 @@ def build_write_plan(
             updates.append({"record_id": item["record_id"], "fields": changed})
         else:
             unchanged += 1
+
+    # 正式岗位开放后结束同公司的“待官方发布”监控占位，避免两个状态同时存在。
+    for item in existing:
+        canonical = canonicalize_existing_fields(item.get("fields", {}), field_map, field_types)
+        record_id = item.get("record_id", "")
+        if (
+            record_id in matched_record_ids
+            or canonical.get("公司") not in active_companies
+            or "待官方发布" not in canonical.get("岗位名称", "")
+            or canonical.get("招聘状态") not in {"待开启", "待复核"}
+        ):
+            continue
+        updates.append(
+            {
+                "record_id": record_id,
+                "fields": {
+                    "招聘状态": "已关闭",
+                    "最后核验时间": checked_at.strftime("%Y-%m-%d %H:%M"),
+                    "变更说明": "今日更新｜已发现正式设计岗位，监控占位结束",
+                },
+            }
+        )
+        changed_companies.append(canonical["公司"])
 
     return {
         "creates": creates,

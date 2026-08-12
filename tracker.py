@@ -393,11 +393,11 @@ def build_record(source: dict[str, Any], evidence: PageEvidence, detected_at: da
     eligibility_text = "\n".join(
         compact(value)
         for value in (
-            evidence.text,
             overrides.get("cohort"),
             overrides.get("education"),
             overrides.get("city"),
             overrides.get("major"),
+            evidence.text,
         )
         if compact(value)
     )

@@ -16,7 +16,7 @@ from dataclasses import asdict, dataclass
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterable
-from urllib.parse import urljoin, urlparse, urlunparse
+from urllib.parse import unquote, urljoin, urlparse, urlunparse
 
 TZ_NAME = "Asia/Shanghai"
 CANONICAL_FIELDS = (
@@ -102,6 +102,7 @@ ROLE_KEYWORDS = (
     "ai 体验",
     "智能座舱",
     "数字座舱",
+    "视觉设计",
     "视觉设计师",
     "界面设计",
     "cmf设计",
@@ -380,9 +381,14 @@ class JobRecord:
 def build_record(source: dict[str, Any], evidence: PageEvidence, detected_at: datetime | None = None) -> JobRecord | None:
     detected_at = detected_at or now_cn()
     normalized_evidence_url = normalize_url(evidence.url)
-    overrides = {
-        normalize_url(url): values for url, values in source.get("job_overrides", {}).items()
-    }.get(normalized_evidence_url, {})
+    overrides = next(
+        (
+            values
+            for url, values in source.get("job_overrides", {}).items()
+            if unquote(normalize_url(url)) == unquote(normalized_evidence_url)
+        ),
+        {},
+    )
     job_title = overrides.get("title") or infer_job_title(evidence.title, evidence.text)
     eligibility_text = "\n".join(
         compact(value)

@@ -390,17 +390,18 @@ def build_record(source: dict[str, Any], evidence: PageEvidence, detected_at: da
         {},
     )
     job_title = overrides.get("title") or infer_job_title(evidence.title, evidence.text)
-    eligibility_text = "\n".join(
+    structured_evidence = "\n".join(
         compact(value)
         for value in (
             overrides.get("cohort"),
             overrides.get("education"),
             overrides.get("city"),
             overrides.get("major"),
-            evidence.text,
         )
         if compact(value)
     )
+    # 人工核验的结构化证据来自同一官方岗位页；不用整站混杂的历史活动文案干扰资格判断。
+    eligibility_text = structured_evidence if overrides else evidence.text
     reasons = eligibility_reasons(job_title, eligibility_text, source)
     if reasons:
         return None

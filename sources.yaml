@@ -176,11 +176,44 @@ sources:
     company_level: 大型科技平台与头部游戏企业
     priority: P0
     batch: 2027届校园招聘
-    campaign_2027: false
-    write_placeholder: false
+    campaign_2027: true
     entry_url: https://join.qq.com/post.html
     allowed_domains: [join.qq.com]
     job_link_regex: /(post|position|job|detail)/
+    seed_jobs:
+      - https://join.qq.com/post.html?keyword=交互设计
+      - https://join.qq.com/post.html?keyword=产品体验设计
+      - https://join.qq.com/post.html?keyword=视觉设计
+      - https://join.qq.com/post.html?keyword=游戏GUI视觉设计
+    job_overrides:
+      "https://join.qq.com/post.html?keyword=交互设计":
+        title: 交互设计
+        cohort: 2027校园招聘 应届毕业生
+        education: 本科可申请（腾讯官网未单列学历限制）
+        city: 深圳、上海
+        major: 设计、人机交互、数字媒体等相关专业；具体以投递页为准
+        qualification: 腾讯官网2027校园招聘正式岗位；CSIG/IEG；工作地点深圳、上海
+      "https://join.qq.com/post.html?keyword=产品体验设计":
+        title: 产品体验设计
+        cohort: 2027校园招聘 应届毕业生
+        education: 本科可申请（腾讯官网未单列学历限制）
+        city: 深圳、北京、广州
+        major: 设计、用户体验、人机交互等相关专业；具体以投递页为准
+        qualification: 腾讯官网2027校园招聘正式岗位；CDG/CSIG/PCG/TEG/WXG；工作地点深圳、北京、广州
+      "https://join.qq.com/post.html?keyword=视觉设计":
+        title: 视觉设计
+        cohort: 2027校园招聘 应届毕业生
+        education: 本科可申请（腾讯官网未单列学历限制）
+        city: 深圳、北京、上海
+        major: 视觉传达、平面设计、数字媒体等相关专业；具体以投递页为准
+        qualification: 腾讯官网2027校园招聘正式岗位；CDG/CSIG/IEG/PCG；工作地点深圳、北京、上海
+      "https://join.qq.com/post.html?keyword=游戏GUI视觉设计":
+        title: 游戏GUI视觉设计
+        cohort: 2027校园招聘 应届毕业生
+        education: 本科可申请（腾讯官网未单列学历限制）
+        city: 深圳
+        major: 视觉传达、界面设计、数字媒体等相关专业；具体以投递页为准
+        qualification: 腾讯官网2027校园招聘正式岗位；IEG；工作地点深圳
     max_details: 100
 
   - name: 京东
